@@ -37,7 +37,7 @@ kernelspec:
 This lecture builds on the job search model with separation presented in the
 {doc}`previous lecture <mccall_model_with_separation>`.
 
-The key difference is that wage offers now follow a {doc}`Markov chain <finite_markov>` rather than
+The key difference is that wage offers now follow a {doc}`Markov chain <intermediate:finite_markov>` rather than
 being IID.
 
 This modification adds persistence to the wage offer process, meaning that

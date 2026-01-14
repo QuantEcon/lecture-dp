@@ -1,8 +1,8 @@
-name: Build Project [using jupyter-book]
-on: 
-  pull_request:
-    types: [opened, synchronize, reopened]
-  workflow_dispatch:
+name: Build Cache
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # Every Monday at 2am UTC
+  workflow_dispatch:      # Manual trigger when needed
 
 jobs:
   build:
@@ -12,18 +12,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
-      - name: Restore Build Cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            _build/.jupyter_cache
-            _build/.doctrees
-            _build/jupyter_execute
-          key: jb-cache-${{ hashFiles('environment.yml') }}-
-          restore-keys: |
-            jb-cache-${{ hashFiles('environment.yml') }}-
-            jb-cache-
       
       - name: Setup Anaconda
         uses: conda-incubator/setup-miniconda@v3
@@ -39,10 +27,6 @@ jobs:
         shell: bash -l {0}
         run: conda list
       
-      - name: Display Pip Versions
-        shell: bash -l {0}
-        run: pip list
-      
       - name: Build HTML
         shell: bash -l {0}
         run: |
@@ -55,8 +39,11 @@ jobs:
           name: execution-reports
           path: _build/html/reports
       
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
+      - name: Save Build Cache
+        uses: actions/cache/save@v4
         with:
-          name: html-build
-          path: _build/html/
+          path: |
+            _build/.jupyter_cache
+            _build/.doctrees
+            _build/jupyter_execute
+          key: jb-cache-${{ hashFiles('environment.yml') }}-${{ github.run_id }}

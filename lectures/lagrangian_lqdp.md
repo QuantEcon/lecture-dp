@@ -601,8 +601,8 @@ def stable_solution(M, verbose=True):
         print('    W11: {}'.format(np.diag(W[:n, :n])))
         print('    W22: {}'.format(np.diag(W[n:, n:])))
 
-    # compute V21 V11^{-1}
-    P = V[n:, :n] @ np.linalg.inv(V[:n, :n])
+    # compute V21 V11^{-1} using pseudo-inverse for numerical stability
+    P = V[n:, :n] @ np.linalg.pinv(V[:n, :n])
 
     return W, V, P
 

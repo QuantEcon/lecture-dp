@@ -7,14 +7,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/quantecon/quantecon-build:latest
+    permissions:
+      contents: read
+      issues: write
+      packages: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
-      - name: Setup Environment
-        uses: quantecon/actions/setup-environment@v0.6.0
       
       - name: Build and Cache Lectures
         uses: quantecon/actions/build-jupyter-cache@v0.6.0

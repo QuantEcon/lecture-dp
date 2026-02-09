@@ -20,14 +20,16 @@ jobs:
     # Only run on releases with tags matching publish-*
     if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/publish-')
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/quantecon/quantecon-build:latest
+    permissions:
+      contents: read
+      packages: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
-      - name: Setup Environment
-        uses: quantecon/actions/setup-environment@v0.6.0
       
       - name: Build HTML
         uses: quantecon/actions/build-lectures@v0.6.0

@@ -1,0 +1,23 @@
+name: Build Cache
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # Every Monday at 2am UTC
+  workflow_dispatch:      # Manual trigger when needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Environment
+        uses: quantecon/actions/setup-environment@v0.6.0
+      
+      - name: Build and Cache Lectures
+        uses: quantecon/actions/build-jupyter-cache@v0.6.0
+        with:
+          builder: 'html'
+          create-issue-on-failure: true

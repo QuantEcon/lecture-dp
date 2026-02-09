@@ -16,13 +16,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publish:
+  build:
     # Only run on releases with tags matching publish-*
     if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/publish-')
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page-url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,8 +36,28 @@ jobs:
           builder: 'html'
           upload-failure-reports: true
       
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-build
+          path: ${{ steps.build.outputs.build-path }}
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page-url }}
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: html-build
+          path: _build/html
+      
       - name: Deploy to GitHub Pages
-        id: deploy
+        id: deployment
         uses: quantecon/actions/publish-gh-pages@v0.6.0
         with:
-          build-dir: ${{ steps.build.outputs.build-path }}
+          build-dir: _build/html

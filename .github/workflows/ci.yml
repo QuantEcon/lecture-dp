@@ -7,44 +7,29 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/quantecon/quantecon-build:latest
+    permissions:
+      contents: read
+      packages: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
-      - name: Setup Anaconda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
-          auto-activate-base: true
-          miniconda-version: 'latest'
-          python-version: "3.13"
-          environment-file: environment.yml
-          activate-environment: quantecon
-      
-      - name: Display Conda Environment Versions
-        shell: bash -l {0}
-        run: conda list
-      
-      - name: Display Pip Versions
-        shell: bash -l {0}
-        run: pip list
+      - name: Restore Jupyter Cache
+        uses: quantecon/actions/restore-jupyter-cache@v0.6.0
       
       - name: Build HTML
-        shell: bash -l {0}
-        run: |
-          jb build lectures --path-output ./ -n -W --keep-going
-      
-      - name: Upload Execution Reports
-        uses: actions/upload-artifact@v4
-        if: failure()
+        uses: quantecon/actions/build-lectures@v0.6.0
+        id: build
         with:
-          name: execution-reports
-          path: _build/html/reports
+          builder: 'html'
+          upload-failure-reports: true
       
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: html-build
-          path: _build/html/
+          path: ${{ steps.build.outputs.build-path }}

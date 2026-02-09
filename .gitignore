@@ -5,3 +5,4 @@ lectures/_build/
 .virtual_documents/
 node_modules/
 package-lock.json
+.tmp/

@@ -6,7 +6,7 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -47,19 +47,6 @@ jobs:
           name: html-build
           path: ${{ steps.build.outputs.build-path }}
           retention-days: 7
-      
-      - name: Create ZIP Archive
-        if: startsWith(github.ref, 'refs/tags/publish-')
-        run: |
-          cd ${{ steps.build.outputs.build-path }}
-          zip -r ../lecture-dp-html.zip .
-      
-      - name: Upload to Release
-        if: startsWith(github.ref, 'refs/tags/publish-')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: _build/lecture-dp-html.zip
-          fail_on_unmatched_files: true
 
   deploy:
     needs: build

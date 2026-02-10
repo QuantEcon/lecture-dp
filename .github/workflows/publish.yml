@@ -31,6 +31,9 @@ jobs:
         with:
           fetch-depth: 0
       
+      - name: Restore Jupyter Cache
+        uses: quantecon/actions/restore-jupyter-cache@v0.6.0
+      
       - name: Build HTML
         uses: quantecon/actions/build-lectures@v0.6.0
         id: build

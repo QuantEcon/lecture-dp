@@ -6,7 +6,7 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -51,6 +51,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page-url }}
@@ -66,3 +70,6 @@ jobs:
         uses: quantecon/actions/publish-gh-pages@v0.6.0
         with:
           build-dir: _build/html
+          create-release-assets: 'true'
+          asset-name: 'lecture-dp-html'
+          github-token: ${{ secrets.GITHUB_TOKEN }}

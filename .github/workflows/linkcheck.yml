@@ -1,0 +1,35 @@
+name: Link Checker
+on:
+  schedule:
+    # Weekly on Sunday 23:00 UTC (Monday morning in Australia)
+    - cron: '0 23 * * 0'
+  workflow_dispatch:
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write              # required for peter-evans/create-issue-from-file
+    steps:
+      # This repo deploys GitHub Pages via the artifact workflow (OIDC), so
+      # there is no gh-pages branch to check out — mirror the live site instead.
+      - name: Mirror published site
+        run: |
+          wget --quiet --recursive --no-parent --no-host-directories \
+               --accept html https://dp.quantecon.org/ || true
+          find . -name '*.html' | head -5
+
+      - name: Link Checker
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          fail: false
+          args: --accept 403,503 '**/*.html'
+
+      - name: Create Issue From File
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v6
+        with:
+          title: Link Checker Report
+          content-filepath: ./lychee/out.md
+          labels: report, automated issue, linkchecker

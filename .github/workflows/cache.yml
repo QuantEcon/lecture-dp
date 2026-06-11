@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: '0 2 * * 1'  # Every Monday at 2am UTC
   workflow_dispatch:      # Manual trigger when needed
+  push:
+    branches: [main]
+    paths: [environment.yml]   # Rebuild cache when the environment changes
 
 jobs:
   build:
@@ -15,7 +18,7 @@ jobs:
       packages: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       

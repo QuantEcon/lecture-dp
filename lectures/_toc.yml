@@ -5,7 +5,6 @@ parts:
   numbered: true
   chapters:
   - file: short_path
-  - file: discrete_dp
 - caption: Job Search
   numbered: true
   chapters:
@@ -17,7 +16,6 @@ parts:
   - file: career
   - file: jv
   - file: odu
-  - file: mccall_q
 - caption: Optimal Savings
   numbered: true
   chapters:
@@ -35,6 +33,13 @@ parts:
   - file: ifp_egm
   - file: ifp_egm_transient_shocks
   - file: ifp_advanced
+- caption: Markov Decision Processes
+  numbered: true
+  chapters:
+  - file: discrete_dp
+  - file: inventory_q
+  - file: rs_inventory_q
+  - file: mccall_q
 - caption: LQ Control
   numbered: true
   chapters:

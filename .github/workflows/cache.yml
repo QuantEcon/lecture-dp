@@ -25,5 +25,5 @@ jobs:
       - name: Build and Cache Lectures
         uses: quantecon/actions/build-jupyter-cache@v0.6.0
         with:
-          builder: 'html'
+          builders: 'html'
           create-issue-on-failure: true

@@ -1,0 +1,22 @@
+version: 2
+enable-beta-ecosystems: true     # required for the conda ecosystem
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ⬆️
+  - package-ecosystem: conda
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ⬆️
+    ignore:
+      - dependency-name: jupyter-book
+        # jupyter-book 2.x is the MyST-MD rewrite and is not a drop-in
+        # upgrade for the Sphinx-based 1.x pipeline this repo uses.
+        versions: ['>=2.0']
+      - dependency-name: python
+        # Python version is constrained by the anaconda distribution

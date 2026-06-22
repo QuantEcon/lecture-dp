@@ -1,0 +1,53 @@
+name: Link Checker
+on:
+  schedule:
+    # Weekly on Sunday 23:00 UTC (Monday morning in Australia)
+    - cron: '0 23 * * 0'
+  workflow_dispatch:
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write              # required for peter-evans/create-issue-from-file
+    steps:
+      # This repo deploys GitHub Pages via the artifact workflow (OIDC), so
+      # there is no gh-pages branch to check out — mirror the live site instead.
+      - name: Mirror published site
+        id: mirror
+        run: |
+          wget --quiet --recursive --no-parent --no-host-directories \
+               --accept html https://dp.quantecon.org/ || true
+          count=$(find . -name '*.html' | wc -l | tr -d ' ')
+          echo "Mirrored $count HTML file(s) from https://dp.quantecon.org/"
+          if [ "$count" -eq 0 ]; then
+            # Mirror failed (site down or wget broke). Don't run lychee against
+            # an empty mirror and report green — surface the failure instead.
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            mkdir -p lychee
+            {
+              echo "## Link Checker — mirror failed"
+              echo
+              echo "\`wget\` mirrored **0 HTML files** from https://dp.quantecon.org/, so the link check did not run."
+              echo "The live site may be down, or the mirror step may be broken — please investigate."
+            } > lychee/out.md
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Link Checker
+        id: lychee
+        if: steps.mirror.outputs.ok == 'true'
+        uses: lycheeverse/lychee-action@v2
+        with:
+          fail: false
+          args: --accept 403,503 '**/*.html'
+
+      # Open an issue if the mirror failed, or if lychee found broken links.
+      - name: Create Issue From File
+        if: steps.mirror.outputs.ok != 'true' || steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v6
+        with:
+          title: Link Checker Report
+          content-filepath: ./lychee/out.md
+          labels: report, automated issue, linkchecker

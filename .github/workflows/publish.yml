@@ -31,10 +31,10 @@ jobs:
           fetch-depth: 0
       
       - name: Restore Jupyter Cache
-        uses: quantecon/actions/restore-jupyter-cache@v0.6.0
+        uses: quantecon/actions/restore-jupyter-cache@v0.8.0
       
       - name: Build HTML
-        uses: quantecon/actions/build-lectures@v0.6.0
+        uses: quantecon/actions/build-lectures@v0.8.0
         id: build
         with:
           builder: 'html'
@@ -66,7 +66,7 @@ jobs:
       
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: quantecon/actions/publish-gh-pages@v0.6.0
+        uses: quantecon/actions/publish-gh-pages@v0.8.0
         with:
           build-dir: _build/html
           create-release-assets: 'true'

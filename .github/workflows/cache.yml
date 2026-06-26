@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 0
       
       - name: Build and Cache Lectures
-        uses: quantecon/actions/build-jupyter-cache@v0.6.0
+        uses: quantecon/actions/build-jupyter-cache@v0.8.0
         with:
           builders: 'html'
           create-issue-on-failure: true

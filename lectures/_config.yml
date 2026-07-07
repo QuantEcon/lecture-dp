@@ -25,7 +25,7 @@ bibtex_bibfiles:
    - _static/quant-econ.bib
 
 html:
-  baseurl: https://dp.quantecon.org/
+  baseurl: https://quantecon.github.io/lecture-dp/
 
 latex:
    latex_documents:
@@ -117,8 +117,8 @@ sphinx:
       index_toc.md: intro.md
     tojupyter_static_file_path: ["source/_static", "_static"]
     tojupyter_target_html: true
-    tojupyter_urlpath: "https://dp.quantecon.org/"
-    tojupyter_image_urlpath: "https://dp.quantecon.org/_static/"
+    tojupyter_urlpath: "https://quantecon.github.io/lecture-dp/"
+    tojupyter_image_urlpath: "https://quantecon.github.io/lecture-dp/_static/"
     tojupyter_lang_synonyms: ["ipython", "ipython3", "python"]
     tojupyter_kernels:
       python3:

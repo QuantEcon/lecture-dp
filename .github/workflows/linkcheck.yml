@@ -68,7 +68,20 @@ jobs:
           # /_notebooks/*.ipynb, /_pdf/*.pdf) against the extracted site root.
           args: --accept 200,403,503 --root-dir ${{ github.workspace }}/_site '_site/*.html'
 
-      # Open an issue if the release asset was missing, or lychee found broken links.
+      # Refresh the open report rather than file a new one on every run:
+      # pass the newest open report's number to the next step. With none
+      # open the number is empty, and the next step files a new issue.
+      - name: Find Open Report
+        id: report
+        if: steps.fetch.outputs.ok != 'true' || steps.lychee.outputs.exit_code != 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          number=$(gh issue list -R ${{ github.repository }} --state open --label linkchecker \
+            --search 'in:title "Link Checker Report"' --json number --jq 'map(.number) | max // empty')
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+
+      # Open or refresh the report if the release asset was missing, or lychee found broken links.
       - name: Create Issue From File
         if: steps.fetch.outputs.ok != 'true' || steps.lychee.outputs.exit_code != 0
         uses: peter-evans/create-issue-from-file@v6
@@ -76,3 +89,4 @@ jobs:
           title: Link Checker Report
           content-filepath: ./lychee/out.md
           labels: report, automated issue, linkchecker
+          issue-number: ${{ steps.report.outputs.number }}

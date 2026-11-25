@@ -21,11 +21,18 @@ jobs:
       - name: Restore Jupyter Cache
         uses: quantecon/actions/restore-jupyter-cache@v0
       
+      - name: Build Download Notebooks
+        uses: quantecon/actions/build-lectures@v0
+        with:
+          builder: 'jupyter'
+          upload-failure-reports: true
+      
       - name: Build HTML
         uses: quantecon/actions/build-lectures@v0
         id: build
         with:
           builder: 'html'
+          html-copy-notebooks: 'true'
           upload-failure-reports: true
       
       - name: Upload Build Artifact

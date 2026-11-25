@@ -84,6 +84,7 @@ sphinx:
       header_organisation_url: https://quantecon.org
       header_organisation: QuantEcon
       repository_url: https://github.com/QuantEcon/lecture-dp
+      download_nb_path: https://quantecon.github.io/lecture-dp
       path_to_docs: lectures
       twitter: quantecon
       twitter_logo_url: https://assets.quantecon.org/img/qe-twitter-logo.png
